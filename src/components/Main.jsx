@@ -34,24 +34,21 @@ class Main extends Component {
 
     const Calculator = require("arithmetic-expression-calculator/src/Calculator");
     const expression = String(this.state.operation.join(""));
-    //const expression1 = '10 + 6'
     const rpnCalculator = new Calculator();
     const rpnExpression = rpnCalculator.convertToRPN(expression);
     const calcResult = rpnCalculator.calculateRPNExpression(rpnExpression);
-    const res = this.state.res;
 
     this.setState((prevState) => ({
       operation: [...prevState.operation],
       res: [true],
       result: calcResult,
     }));
-    console.log(expression, calcResult, res);
     return;
   };
 
   handleClean = (e) => {
     e.preventDefault();
-    this.setState({ operation: [], result:[] });
+    this.setState({ operation: [], result: [] });
   };
 
   handleClick = (e) => {
@@ -64,16 +61,13 @@ class Main extends Component {
       res: [false],
       result: [],
     }));
-
-    console.log(String(this.state.operation.join("")), this.state.res);
   };
 
   handleDisplay = (e) => {
     const oper = String(this.state.operation.join(""));
     const res = this.state.result;
-    const display = e === "oper" ? oper : res
-    return display
-
+    const display = e === "oper" ? oper : res;
+    return display;
   };
   render() {
     return (
