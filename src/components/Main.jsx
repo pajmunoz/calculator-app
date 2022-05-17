@@ -30,7 +30,7 @@ class Main extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.handleClean(e);
+    //this.handleClean(e);
 
     const Calculator = require("arithmetic-expression-calculator/src/Calculator");
     const expression = String(this.state.operation.join(""));
@@ -53,11 +53,11 @@ class Main extends Component {
 
   handleClick = (e) => {
     e.preventDefault();
-
+    
     const formatedValue = String(e.target.value);
 
     this.setState((prevState) => ({
-      operation: [...prevState.operation, formatedValue],
+      operation: this.state.result.length >= 0 ? [...prevState.operation, formatedValue]: [formatedValue],
       res: [false],
       result: [],
     }));
@@ -68,6 +68,18 @@ class Main extends Component {
     const res = this.state.result;
     const display = e === "oper" ? oper : res;
     return display;
+  };
+  handleSign = (e) => {
+    const array = String(this.state.operation.join("")).split(" ");
+    const lastItem = array.slice(-1)
+    const popArray = array.pop()
+    const switchSign = String(  ` ( - 1 * ${Math.abs(lastItem)} )`).split("").join(" ")
+
+    const pushSign = array.push(switchSign);
+    this.setState((prevState) => ({
+        operation: [...prevState.operation, switchSign],
+      }));
+    console.log("poparray",popArray,"state: ",array);
   };
   render() {
     return (
@@ -97,19 +109,33 @@ class Main extends Component {
                 Limpiar
               </button>
             </div>
-            {this.data.map((data) => (
-              <div className="col-3" key={data.id}>
-                {" "}
-                <button
-                  type="button"
-                  onClick={this.handleClick}
-                  value={data.val}
-                  className="btn btn-primary"
-                >
-                  {data.val}
-                </button>{" "}
-              </div>
-            ))}
+            {this.data.map((data) =>
+              data.val !== "-/+" ? (
+                <div className="col-3" key={data.id}>
+                  {" "}
+                  <button
+                    type="button"
+                    onClick={this.handleClick}
+                    value={data.val}
+                    className="btn btn-primary"
+                  >
+                    {data.val}
+                  </button>{" "}
+                </div>
+              ) : (
+                <div className="col-3" key={data.id}>
+                  {" "}
+                  <button
+                    type="button"
+                    onClick={this.handleSign}
+                    value="sign"
+                    className="btn btn-primary"
+                  >
+                    {data.val}
+                  </button>{" "}
+                </div>
+              )
+            )}
             <div className="col-12">
               <button type="submit" className="btn btn-success" value="=">
                 =
