@@ -93,7 +93,7 @@ class Main extends Component {
         this.setState((prevState) => ({
           operation: [...prevState.operation, ` ${e.key} `],
         }));
-        console.log(e.key);
+        //console.log(e.key);
       }
     }
 
@@ -117,7 +117,8 @@ class Main extends Component {
                 className="form-control"
                 onKeyPress={this.handleKey}
                 placeholder={this.handleDisplay("oper")}
-                readOnly={this.handleDisplay("oper")}
+                //readOnly={this.handleDisplay("oper")}
+                defaultValue={this.handleDisplay("oper")}
               />
             </div>
             <div className="input-group">
@@ -125,7 +126,8 @@ class Main extends Component {
                 type="text"
                 className="form-control"
                 placeholder={this.handleDisplay("res")}
-                disabled
+                //readOnly={this.handleDisplay("res")}
+                defaultValue={this.handleDisplay("res")}
               />
               <button
                 type="button"
