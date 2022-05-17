@@ -109,33 +109,33 @@ class Main extends Component {
   render() {
     return (
       <>
-        <form className="w-50 mx-auto" onSubmit={this.handleSubmit}>
-          <div className="row">
+        <form className="mt-5" onSubmit={this.handleSubmit}>
+          <div className="row p-3 mx-auto  bg-calc">
             <div className="input-group">
-              <input
-                type="text"
-                className="form-control"
-                onKeyPress={this.handleKey}
-                placeholder={this.handleDisplay("oper")}
-                //readOnly={this.handleDisplay("oper")}
-                defaultValue={this.handleDisplay("oper")}
-              />
-            </div>
-            <div className="input-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder={this.handleDisplay("res")}
-                //readOnly={this.handleDisplay("res")}
-                defaultValue={this.handleDisplay("res")}
-              />
-              <button
-                type="button"
-                onClick={this.handleClean}
-                className="btn btn-outline-secondary"
-              >
-                Limpiar
-              </button>
+              <div className="form-floating col-12">
+                <input
+                  type="text"
+                  id="formu"
+                  className="form-control"
+                  onKeyPress={this.handleKey}
+                  placeholder="1 + 2"
+                  readOnly
+                  defaultValue={this.handleDisplay("oper")}
+                />
+                <label htmlFor="formu">Fórmula</label>
+              </div>
+
+              <div className="form-floating col-12 mt-2">
+                <input
+                  type="text"
+                  id="res"
+                  className="form-control"
+                  placeholder="Respuesta"
+                  readOnly
+                  defaultValue={this.handleDisplay("res")}
+                />
+                <label htmlFor="res">Resultado</label>
+              </div>
             </div>
             {this.data.map((data) => (
               <div className="col-3" key={data.id}>
@@ -147,14 +147,24 @@ class Main extends Component {
                   keycode={data.keycode}
                   className="btn btn-primary"
                 >
-                  {data.val}
+                  {data.val} 
                 </button>{" "}
               </div>
             ))}
-            <div className="col-6 mx-auto">
-              <button type="submit" className="btn btn-success" value="=">
-                =
+            <div className="col-6">
+              <button
+                type="button"
+                onClick={this.handleClean}
+                className="btn btn-outline-primary"
+              >
+                AC <span className="badge bg-primary">⌫</span>
               </button>
+            </div>
+            <div className="col-6">
+              <button type="submit" className="btn btn-outline-success" value="=">
+                = <span className="badge bg-success">↵</span>
+              </button>
+
             </div>
           </div>
         </form>
