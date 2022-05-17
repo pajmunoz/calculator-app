@@ -7,25 +7,26 @@ class Main extends Component {
     super(props);
     this.state = { operation: [null], res: [false], result: [null] };
     this.handleClick = this.handleClick.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
   }
 
   data = [
-    { id: 0, val: 7 },
-    { id: 1, val: 8 },
-    { id: 2, val: 9 },
-    { id: 3, val: " / " },
-    { id: 4, val: 4 },
-    { id: 5, val: 5 },
-    { id: 6, val: 6 },
-    { id: 7, val: " * " },
-    { id: 8, val: 1 },
-    { id: 9, val: 2 },
-    { id: 10, val: 3 },
-    { id: 11, val: " - " },
-    { id: 12, val: "-/+" },
-    { id: 13, val: 0 },
-    { id: 14, val: "." },
-    { id: 15, val: " + " },
+    { id: 0, val: 7, keycode: 55 },
+    { id: 1, val: 8, keycode: 56 },
+    { id: 2, val: 9, keycode: 57 },
+    { id: 3, val: " / ", keycode: 191 },
+    { id: 4, val: 4, keycode: 52 },
+    { id: 5, val: 5, keycode: 53 },
+    { id: 6, val: 6, keycode: 54 },
+    { id: 7, val: " * ", keycode: 106 },
+    { id: 8, val: 1, keycode: 49 },
+    { id: 9, val: 2, keycode: 50 },
+    { id: 10, val: 3, keycode: 51 },
+    { id: 11, val: " - ", keycode: 109 },
+    { id: 12, val: "00", keycode: 48 },
+    { id: 13, val: 0, keycode: 48 },
+    { id: 14, val: ".", keycode: 190 },
+    { id: 15, val: " + ", keycode: 107 },
   ];
 
   handleSubmit = (e) => {
@@ -43,21 +44,23 @@ class Main extends Component {
       res: [true],
       result: calcResult,
     }));
-    return;
+    //console.log(expression);
   };
 
   handleClean = (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     this.setState({ operation: [], result: [] });
   };
 
   handleClick = (e) => {
     e.preventDefault();
-    
     const formatedValue = String(e.target.value);
 
     this.setState((prevState) => ({
-      operation: this.state.result.length >= 0 ? [...prevState.operation, formatedValue]: [formatedValue],
+      operation:
+        this.state.result.length >= 0
+          ? [...prevState.operation, formatedValue]
+          : [formatedValue],
       res: [false],
       result: [],
     }));
@@ -69,29 +72,52 @@ class Main extends Component {
     const display = e === "oper" ? oper : res;
     return display;
   };
-  handleSign = (e) => {
-    const array = String(this.state.operation.join("")).split(" ");
-    const lastItem = array.slice(-1)
-    const popArray = array.pop()
-    const switchSign = String(  ` ( - 1 * ${Math.abs(lastItem)} )`).split("").join(" ")
 
-    const pushSign = array.push(switchSign);
-    this.setState((prevState) => ({
-        operation: [...prevState.operation, switchSign],
+  onKeyPress = (e) => {
+    e.preventDefault();
+    if (!isNaN(e.key)) {
+      this.setState((prevState) => ({
+        operation: [...prevState.operation, e.key],
       }));
-    console.log("poparray",popArray,"state: ",array);
+    } else if (e.which === 8) {
+      this.handleClean(e);
+    } else if (e.which === 13) {
+      this.handleSubmit(e);
+      this.setState(() => ({
+        operation: [],
+        res: [true],
+      }));
+    } else {
+      if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/") {
+        e.preventDefault(e);
+        this.setState((prevState) => ({
+          operation: [...prevState.operation, ` ${e.key} `],
+        }));
+        console.log(e.key);
+      }
+    }
+
+    //console.log(this.state.operation);
   };
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeyPress, false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyPress, false);
+  }
+
   render() {
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
+        <form className="w-50 mx-auto" onSubmit={this.handleSubmit}>
           <div className="row">
             <div className="input-group">
               <input
                 type="text"
                 className="form-control"
+                onKeyPress={this.handleKey}
                 placeholder={this.handleDisplay("oper")}
-                disabled
+                readOnly={this.handleDisplay("oper")}
               />
             </div>
             <div className="input-group">
@@ -109,34 +135,21 @@ class Main extends Component {
                 Limpiar
               </button>
             </div>
-            {this.data.map((data) =>
-              data.val !== "-/+" ? (
-                <div className="col-3" key={data.id}>
-                  {" "}
-                  <button
-                    type="button"
-                    onClick={this.handleClick}
-                    value={data.val}
-                    className="btn btn-primary"
-                  >
-                    {data.val}
-                  </button>{" "}
-                </div>
-              ) : (
-                <div className="col-3" key={data.id}>
-                  {" "}
-                  <button
-                    type="button"
-                    onClick={this.handleSign}
-                    value="sign"
-                    className="btn btn-primary"
-                  >
-                    {data.val}
-                  </button>{" "}
-                </div>
-              )
-            )}
-            <div className="col-12">
+            {this.data.map((data) => (
+              <div className="col-3" key={data.id}>
+                {" "}
+                <button
+                  type="button"
+                  onClick={this.handleClick}
+                  value={data.val}
+                  keycode={data.keycode}
+                  className="btn btn-primary"
+                >
+                  {data.val}
+                </button>{" "}
+              </div>
+            ))}
+            <div className="col-6 mx-auto">
               <button type="submit" className="btn btn-success" value="=">
                 =
               </button>
